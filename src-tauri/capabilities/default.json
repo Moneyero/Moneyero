@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Moneyero main window: core IPC only. All network, wallet and process access is mediated by Rust commands.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
