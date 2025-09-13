@@ -1,0 +1,17 @@
+{
+  // Cloudflare deployment of the public site + browser-mode terminal.
+  // Static only: no Worker code, no server, nothing logged by us.
+  // Build with `npm run build`, deploy with `npx wrangler deploy`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "moneyero",
+  "compatibility_date": "2026-11-01",
+  "routes": [
+    { "pattern": "moneyero.app", "custom_domain": true },
+    { "pattern": "www.moneyero.app", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
