@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <clipPath id="c"><circle cx="200" cy="200" r="186"/></clipPath>
+  </defs>
+
+  <!-- solid square, no transparent corners -->
+  <rect width="400" height="400" fill="#1b1b1b"/>
+
+  <!-- thin Zcash-gold rim -->
+  <circle cx="200" cy="200" r="194" fill="#f4b728"/>
+
+  <g clip-path="url(#c)">
+    <!-- Monero orange -->
+    <rect width="400" height="400" fill="#f26822"/>
+    <!-- Monero grey band -->
+    <rect x="0" y="262" width="400" height="200" fill="#4d4d4d"/>
+    <!-- white keyhole -->
+    <circle cx="200" cy="150" r="76" fill="#fff"/>
+    <path d="M150,190 L250,190 L272,318 L128,318 Z" fill="#fff"/>
+    <!-- opening, in Monero grey, running down into the band -->
+    <circle cx="200" cy="150" r="38" fill="#4d4d4d"/>
+    <path d="M186,170 L214,170 L238,420 L162,420 Z" fill="#4d4d4d"/>
+  </g>
+</svg>
