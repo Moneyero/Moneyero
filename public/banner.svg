@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" width="1500" height="500">
+  <!-- Monero orange field, Monero grey band, Zcash-gold seam -->
+  <rect width="1500" height="500" fill="#f26822"/>
+  <rect x="0" y="380" width="1500" height="120" fill="#4d4d4d"/>
+  <rect x="0" y="374" width="1500" height="8" fill="#f4b728"/>
+
+  <!-- the keyhole mark, same geometry as the logo, legs standing in the grey band -->
+  <g transform="translate(1050,0) scale(1.45)">
+    <circle cx="200" cy="150" r="76" fill="#fff"/>
+    <path d="M150,190 L250,190 L272,318 L128,318 Z" fill="#fff"/>
+    <circle cx="200" cy="150" r="38" fill="#4d4d4d"/>
+    <path d="M186,170 L214,170 L238,420 L162,420 Z" fill="#4d4d4d"/>
+  </g>
+
+  <!-- wordmark and tagline, clear of the profile picture at bottom left -->
+  <text x="430" y="218" font-family="'Segoe UI Black', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="2" fill="#fff">MONEYERO</text>
+  <text x="436" y="292" font-family="'Segoe UI', Verdana, Arial, sans-serif" font-weight="600" font-size="46" fill="#fff">Trade loud. <tspan fill="#4d4d4d">Hold quiet.</tspan></text>
+
+  <!-- band line -->
+  <text x="436" y="452" font-family="'Segoe UI', Verdana, Arial, sans-serif" font-weight="700" font-size="34" fill="#fff">moneyero.app</text>
+  <text x="700" y="452" font-family="'Segoe UI', Verdana, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="4" fill="#f4b728">XMR · ZEC · SOL</text>
+</svg>
