@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent - Moneyero</title>
+  <meta name="description" content="Treasury rules evaluated against live balances, natural-language control through Claude, approval-first execution. The agent has no signing power." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Agent: automation that can propose, and nothing else</span><span class="pages">Board: Settlement (private)</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Agent: automation that can propose, and nothing else</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">An optional helper. You write a rule in plain English, such as "when my profit passes $500, suggest moving 30% into Monero". It watches your balances and, when the condition is met, it <b>suggests</b> the move. It cannot move money. You click approve, and the app opens the normal screen with the numbers filled in for you to do it yourself.</p>
+        <h3>How to use it</h3>
+        <ol>
+          <li>Turn it on in Settings. It is off by default.</li>
+          <li>Type a rule in the chat box, or build one from the dropdowns: a condition, an action, and how often it may fire.</li>
+          <li>When a rule fires, a <b>proposal</b> appears with the exact amount and the reason. Approve or dismiss.</li>
+          <li>Approving opens the Exchange, Terminal or Vault screen prefilled. You still press the final button.</li>
+        </ol>
+        <p>The plain-English part uses Claude, an AI model, and needs an API key you add yourself. If you would rather not involve an AI company at all, leave the key empty: the rules built from dropdowns work without it, and nothing is sent anywhere.</p>
+        <div class="quoteheader">The one promise</div>
+        <div class="quote x">The agent has no access to your keys, your wallets or the swap services. It can only write a suggestion on your screen. This is enforced in the code, not by a setting.</div>
+        <h3>Rules, technically</h3>
+        <p>A rule is a trigger, an action and a cooldown. Triggers are evaluated against a snapshot assembled from live data: prices, balances per asset, P&amp;L.</p>
+        <table class="spec">
+          <tr><td>Triggers</td><td>realised P&amp;L above · SOL balance above · allocation above or below a percentage (SOL, USDC, XMR, ZEC, tokens) · price above or below · transparent ZEC above · treasury value above</td></tr>
+          <tr><td>Actions</td><td>propose a cross-chain move (opens Exchange prefilled) · propose a Solana swap (opens Terminal prefilled) · propose shielding ZEC (opens Vault) · notify</td></tr>
+          <tr><td>Safeguards</td><td>cooldown of at least 60 s · one pending proposal per rule · proposals above <code>agent.max_proposal_usd</code> flagged · engine off by default</td></tr>
+        </table>
+        <h3>Example</h3>
+        <div class="code"><span class="c"># you type</span>
+"When realised profit exceeds $500, propose moving 30% into XMR."
+
+<span class="c"># it becomes</span>
+trigger   <span class="p">realized_pnl_above</span>: 500
+action    <span class="p">propose_move</span>: SOL → XMR, 30%
+cooldown  3600s</div>
+        <p>When it fires, a proposal appears with the concrete amount and the rule's reasoning. Approve, and Exchange opens with the route and amount filled in.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Agent — technical details: natural language, and what is sent to Anthropic</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <ul>
+          <li>Claude (default <code>claude-opus-5-5</code>, configurable) receives a system prompt describing the rule schema and the constraints, recent chat, and the current snapshot, and answers in a strict JSON shape: reply, suggested rules, one-off proposals.</li>
+          <li>Suggested rules are validated in Rust against the schema. Invalid ones are shown as rejected, not silently corrected.</li>
+          <li>The API key is a vault secret. Requests go through the tunnelled client. Model, token counts and results are written to the audit table.</li>
+          <li>The model is instructed, and the code enforces, that it cannot execute anything and must never ask for seeds or keys.</li>
+        </ul>
+        <h3>What is sent to Anthropic</h3>
+        <p>The snapshot shown in the Agent view: prices, balances per asset, P&amp;L, your existing rules, and your message. Not addresses, not keys, not transaction history. If that exceeds your threat model, leave the key unset; the rules engine works without it.</p>
+        <div class="note"><b>No signing power is not a setting.</b> The agent module holds no reference to the signer, the wallet RPCs or the exchange order functions. See <code>src-tauri/src/agent.rs</code>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
