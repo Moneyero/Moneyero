@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download and build - Moneyero</title>
+  <meta name="description" content="Run Moneyero in browser mode now or build the desktop application from source. Requirements, first-run steps and known limits." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Download: build it, which is also how you audit it</span><span class="pages">Board: Infrastructure</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Download: build it, which is also how you audit it</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">Two ways to use Moneyero. The <b>browser version</b> needs nothing installed and does the Solana trading. The <b>desktop app</b> does everything else: the Monero and Zcash wallets, the swapping and the VPN. There is no installer for the desktop app yet; you build it from the source code.</p>
+        <h3>Which one is for you</h3>
+        <table class="spec">
+          <tr><td>Browser</td><td>You want to try the trading screen now, with the Phantom extension. Nothing to download. <a href="app.html">Open it »</a></td></tr>
+          <tr><td>Desktop, build it</td><td>You know what a terminal window is and have run <code>npm install</code> before. Steps are in the next post; it takes a few minutes the first time.</td></tr>
+          <tr><td>Desktop, wait</td><td>If "git clone" means nothing to you, use the browser version for now. A signed installer you can double-click is on the list, and the Beginner's guide will say when it exists.</td></tr>
+        </table>
+        <div class="actions"><a class="btn" href="#build">Build the desktop app</a><a class="btn grey" href="app.html">Open browser mode</a><a class="btn grey" href="guide.html">Beginner's guide</a></div>
+        <h3>Requirements</h3>
+        <p class="small dim">Moneyero supervises existing software rather than bundling it. Install these yourself and point the application at them in Settings.</p>
+        <div class="tblwrap"><table class="ft">
+          <tr><th>Component</th><th>Needed for</th><th>Notes</th></tr>
+          <tr><td>Windows 10/11, Linux, macOS 11+</td><td>Desktop build</td><td>WebView2 on Windows, webkit2gtk on Linux</td></tr>
+          <tr><td>Node 20+, Rust stable, C toolchain</td><td>Building</td><td>Windows: MSVC Build Tools, or <code>scripts/msvc-env.ps1</code> for a portable toolchain without administrator rights</td></tr>
+          <tr><td>monero-wallet-rpc</td><td>Monero wallet</td><td>Official binary from getmonero.org; verify the signature. A node: your own monerod or a remote node over Tor</td></tr>
+          <tr><td>zcashd or zallet</td><td>Zcash wallet</td><td>RPC enabled; full sync required</td></tr>
+          <tr><td>A WireGuard config</td><td>Built-in VPN</td><td>From any provider. Nothing to install. Optional: WireGuard for Windows or wireguard-tools for a system tunnel; Tor daemon or Tor Browser for the SOCKS port</td></tr>
+          <tr><td>API keys (optional)</td><td>Jupiter limits, Trocador, ChangeNOW, Exolix, Anthropic</td><td>All stored in the vault</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt" id="build">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Download — technical details: build from source, first run, data location</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <div class="quoteheader">Code</div>
+        <div class="code">git clone &lt;repo&gt; moneyero &amp;&amp; cd moneyero
+npm install
+
+<span class="c"># browser mode: site at / and terminal at /app.html</span>
+npm run dev
+
+<span class="c"># desktop (full)</span>
+npm run desktop
+npm run desktop:build     <span class="c"># src-tauri/target/release/bundle</span>
+
+<span class="c"># Windows without administrator rights for VS Build Tools</span>
+. .\scripts\msvc-env.ps1
+npm run desktop</div>
+        <p class="small dim">The first Rust build compiles Tauri and its dependencies and takes a few minutes. Rebuilds take seconds. Checks: <code>npm run build</code> and <code>cargo test</code> in <code>src-tauri/</code>.</p>
+        <h3>First run</h3>
+        <ol>
+          <li>Settings: initialise the vault with a master password and unlock it.</li>
+          <li>Settings, Monero: path to <code>monero-wallet-rpc</code> and the daemon address. Vault: start the process, then create or restore a wallet.</li>
+          <li>Network: paste a WireGuard config and connect, or enable the Tor switch if Tor is running. Run the exit-IP and DNS checks.</li>
+          <li>Vault, SOL signer: generate or import the trading key and fund it modestly.</li>
+          <li>Settings, Zcash: RPC URL and credentials for zcashd or zallet.</li>
+        </ol>
+        <h3>Data location</h3>
+        <table class="spec">
+          <tr><td>Windows</td><td><code>%APPDATA%\io.moneyero.terminal</code></td></tr>
+          <tr><td>Linux</td><td><code>~/.local/share/io.moneyero.terminal</code></td></tr>
+          <tr><td>macOS</td><td><code>~/Library/Application Support/io.moneyero.terminal</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="post" id="limits">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Download — known limits, honestly</span><span class="date">« <b>Reply #2</b> »</span></div>
+      <div class="inner">
+        <p class="small dim">Also in docs/BLOCKERS.md. Each item appears in the interface as a plain message where the feature would be; none is simulated.</p>
+        <div class="tblwrap"><table class="ft">
+          <tr><th>Status</th><th>Item</th><th>Detail</th></tr>
+          <tr><td>platform limit</td><td>Phantom in the desktop window</td><td>Extensions cannot inject into WebView2 or webkit. Desktop uses the vault signer; Phantom works in browser mode.</td></tr>
+          <tr><td>not implemented</td><td>Hardware wallets</td><td>No Ledger or Trezor transport in the webview. Planned through a Rust HID bridge.</td></tr>
+          <tr><td>roadmap</td><td>Zcash light client</td><td>Backend is the zcashd or zallet full-node wallet. A lightwalletd client in Rust is planned.</td></tr>
+          <tr><td>node-side</td><td>Zcash seed restore</td><td>Mnemonic restore happens in zcashd or zallet. Moneyero imports individual keys.</td></tr>
+          <tr><td>platform limit</td><td>System WireGuard on Windows</td><td>Installing a tunnel service requires Administrator. The built-in tunnel does not; status reading works once a system tunnel exists.</td></tr>
+          <tr><td>by design</td><td>Kill switch is inferred</td><td>For the system tunnel, derived from AllowedIPs and platform defaults, labelled as such. The built-in tunnel fails closed by construction.</td></tr>
+          <tr><td>credentials</td><td>Provider API keys</td><td>Trocador and ChangeNOW require keys obtained from them. SideShift and Exolix quote without.</td></tr>
+          <tr><td>by design</td><td>Tor is detected, not bundled</td><td>Run the Tor daemon or Tor Browser; Moneyero uses the SOCKS port.</td></tr>
+          <tr><td>not yet</td><td>Signed installers</td><td>Build from source. Reproducible-build notes to follow.</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
