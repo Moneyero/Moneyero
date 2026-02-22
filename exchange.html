@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exchange - Moneyero</title>
+  <meta name="description" content="XMR and ZEC to and from SOL and USDC through non-custodial swap services, compared on rate, limits, ETA and KYC rating, with disclosure of what each provider learns." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Exchange: from SOL to XMR, with the disclosure in front of the button</span><span class="pages">Board: Settlement (private)</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Exchange: from SOL to XMR, with the disclosure in front of the button</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">This is how your Solana profit becomes Monero or Zcash. You send SOL to a swap service, and a few minutes later XMR or ZEC arrives in your Vault. Think of it as a currency exchange booth on the internet. For those few minutes you are trusting the booth, so the app shows you everything about it before you pay.</p>
+        <h3>How to use it</h3>
+        <ol>
+          <li>Choose the direction, for example <b>SOL → XMR</b>, and the amount.</li>
+          <li>The app asks several booths at once and lists them: how much you get, how long it takes, and an <b>ID rating</b> from A to D. <b>A</b> never asks for your passport. <b>D</b> often does, sometimes after you have already paid. Prefer A and B.</li>
+          <li>Pick one. A red box appears saying exactly what this booth will learn about you: the amount, your Monero address, and your IP unless the VPN is on.</li>
+          <li>Click <b>order</b>. The app shows you the address to pay and the exact amount. You pay it from the trading screen. The order is tracked until the Monero arrives.</li>
+        </ol>
+        <div class="quoteheader">Three habits</div>
+        <div class="quote x">Turn the VPN on first. Let the app give the booth a fresh Monero address (it does this by default). Keep amounts boring; round numbers at odd hours stand out.</div>
+        <h3>Routes</h3>
+        <ul>
+          <li>XMR ⇄ SOL, ZEC ⇄ SOL, USDC (Solana) ⇄ XMR or ZEC. SOL ⇄ USDC on-chain belongs in the Terminal.</li>
+          <li>Quotes fan out to all enabled providers in parallel with a 20-second budget each, sorted by output; failures show the provider's own error.</li>
+          <li>Each quote shows rate, amount out, minimum and maximum, ETA, KYC rating, fixed or floating, latency, and notes such as log policy or geographic restrictions.</li>
+        </ul>
+        <h3>Providers</h3>
+        <table class="spec">
+          <tr><td>SideShift</td><td>Public pair endpoint for quotes; variable shifts; optional account secret and affiliate id. Restricts some jurisdictions.</td></tr>
+          <tr><td>Trocador</td><td>Aggregator across many exchanges with per-exchange KYC ratings and log policies. API key required. Each sub-provider is its own row.</td></tr>
+          <tr><td>ChangeNOW</td><td>Partner API key required. Standard floating flow.</td></tr>
+          <tr><td>Exolix</td><td>Public rate endpoint; key optional.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Exchange — technical details: orders, refunds, disclosure</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <h3>Orders, failures, refunds</h3>
+        <ul>
+          <li>A refund address is requested on every order and prefilled from your own wallets. A missing refund address is flagged on the order.</li>
+          <li>Orders are stored locally with the provider reference and polled. Transitions to review, refunding, refunded, failed or expired are logged at warning level.</li>
+          <li>Nothing is sent automatically. The application shows the deposit address and exact amount; you pay from the Vault or your Solana wallet.</li>
+        </ul>
+        <h3>What the provider learns</h3>
+        <p>The disclosure is generated per order: your IP path (Tor exit, VPN exit, or real), the deposit transaction, the settle address, amounts and timing. Monero settlement proposes a fresh subaddress. Zcash legs are transparent on every provider we know of, so the application tells you to shield after settlement. Solana legs tie your wallet to the provider on-chain.</p>
+        <div class="quoteheader">Quote</div>
+        <div class="quote bad"><b>These are instant exchangers, not mixers.</b> Use the tunnel, use fresh addresses, keep amounts unremarkable, and prefer providers with a no-log policy and a favourable KYC rating.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
