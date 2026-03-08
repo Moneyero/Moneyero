@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner's guide - Moneyero</title>
+  <meta name="description" content="Plain-language guide: what Solana, Monero and Zcash are, what a wallet and a seed are, what shielded means, why the VPN, what a swap service is, and a glossary." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Beginner's guide: read this first if any of the words on this site are new to you</span><span class="pages">Board: Newbies · sticky</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">The three coins, in plain words</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">You do not need to understand cryptography to use this. You need to understand three things: which money is public, which money is private, and that your internet address follows you around. That is the whole guide.</p>
+        <div class="tblwrap"><table class="ft">
+          <tr><th class="sol">Solana (SOL)</th><th class="xmr">Monero (XMR)</th><th>Zcash (ZEC)</th></tr>
+          <tr>
+            <td style="white-space:normal;font-weight:normal;width:33%">Fast and cheap. Where most trading of new coins happens. <b>Everything is public.</b> Anyone who knows your address can see your balance, every trade you ever made, and who paid you. Forever. Think of it as trading in a glass room.</td>
+            <td style="white-space:normal;width:33%">Private by default, for everyone, always. Nobody can see your balance or your history, not even the person who paid you. There is no "public mode" to accidentally use. Think of it as cash in a safe. <b>This is where Moneyero expects you to keep your money.</b></td>
+            <td style="white-space:normal;width:33%">Has two kinds of money in one coin: <b>shielded</b> (private, like Monero) and <b>transparent</b> (public, like Solana). You have to choose shielded, and many wallets make it easy to get this wrong. Moneyero keeps the two visibly apart and nags you to shield.</td>
+          </tr>
+        </table></div>
+        <h3>So what does the app actually do?</h3>
+        <ol>
+          <li>You trade coins on Solana, in the glass room, using the <b>Terminal</b>.</li>
+          <li>When you have profit you want to keep, you move it out of the glass room through the <b>Exchange</b>, which swaps your Solana money for Monero or Zcash.</li>
+          <li>It lands in your own Monero or Zcash wallet, inside the <b>Vault</b>, on your own computer. From then on nobody is watching it.</li>
+        </ol>
+        <p>While you do all that, the <b>Network</b> part hides your internet address from every server involved, so they cannot tie the glass room to the safe.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Beginner's guide — wallets, seeds, addresses</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <p><b>A wallet</b> is not where your coins are. Coins live on the blockchain. A wallet holds the <b>key</b> that lets you spend them. Whoever has the key has the money.</p>
+        <p><b>A seed</b> is that key written as 25 words (Monero) or 24 words (Zcash, Solana). If your computer dies, those words bring everything back. If someone else gets those words, they take everything. Write them on paper. Never type them into a website, a chat, or an AI. Moneyero shows them once, when the wallet is created, and never stores them.</p>
+        <p><b>An address</b> is what you give someone so they can pay you. On Monero, Moneyero makes a <b>fresh address for every person</b> with one click. Give each person their own. If you give two people the same address, they can work out they both paid the same person.</p>
+        <p><b>The Solana trading key</b> is kept separately, encrypted, in the app. Only put in it what you intend to trade. It is the spending account. Monero and shielded Zcash are the savings account.</p>
+        <div class="quoteheader">Rule of thumb</div>
+        <div class="quote x">Trading money on Solana. Savings in Monero. Zcash only if you keep it shielded. Seed words on paper, nowhere else.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post">
+    <div class="poster"><div class="name s">Network</div><div class="rank">Sr. Member</div><div class="stars s">★★★★</div><div class="avatar s">NET</div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Beginner's guide — why there is a VPN inside a wallet</span><span class="date">« <b>Reply #2</b> »</span></div>
+      <div class="inner">
+        <p>Your computer has an internet address, the <b>IP</b>. It works like the return address on an envelope: every server you talk to sees it. The front page of this site shows you yours, <b data-ip-inline>…</b>, and where it places you.</p>
+        <p>Here is the problem. Monero hides your balance, but when your wallet asks a server "any new payments for me?", that server sees your IP. The price website sees your IP. The swap service sees your IP and your Monero address. Put those together and your private money has your home address on it.</p>
+        <p>A <b>VPN</b> replaces your return address with the VPN company's. <b>Tor</b> does the same through volunteers, slower but with nobody to subpoena. Moneyero has a VPN built into the app itself, so there is nothing to install and nothing to forget to switch on. You get a small file from a VPN provider (Mullvad, Proton, IVPN and others sell these for a few euros a month), paste it in, click connect. If the VPN drops, the app stops talking rather than leaking.</p>
+        <p><b>What it cannot do:</b> protect other programs on your computer, or the Phantom browser extension, which talks to the internet on its own. The app says this on screen rather than pretending otherwise.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Beginner's guide — swap services, the weak link</span><span class="date">« <b>Reply #3</b> »</span></div>
+      <div class="inner">
+        <p>To turn Solana money into Monero you need someone to take your SOL and give you XMR. That is a <b>swap service</b>: a currency exchange booth on the internet. You send them SOL, a few minutes later XMR arrives at your address.</p>
+        <p>For those few minutes you are trusting them, and they learn things: the amount, your Monero address, and your IP unless the VPN is on. Some of them ask for your passport ("KYC"), sometimes only after you have already sent the money. Moneyero shows several booths side by side with their rate, their speed and an <b>ID rating</b> (A means they never ask, D means they often do), and prints exactly what each one will learn about you above the button. You pick. Use the VPN, give them a fresh address, keep the amounts boring.</p>
+        <p>These booths are not magic mixers and they do not make your Solana trades private. They are the door between the glass room and the safe, and the door is the weakest part of the building. The app treats it that way.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Beginner's guide — FAQ</span><span class="date">« <b>Reply #4</b> »</span></div>
+      <div class="inner">
+        <div class="quoteheader">Quote from: someone</div><div class="quote">Do I need to run my own Monero node?</div>
+        <p>No. The app can use a remote node through Tor. Running your own is better and the app supports it, but start with remote.</p>
+        <div class="quoteheader">Quote from: someone</div><div class="quote">Is there an account? A fee? A token?</div>
+        <p>No account, no login, no fee to Moneyero, no token. You pay normal network fees and whatever the swap service charges, and both are shown before you confirm.</p>
+        <div class="quoteheader">Quote from: someone</div><div class="quote">Can I use it on my phone or just in the browser?</div>
+        <p>The browser version does the Solana trading with Phantom, nothing else. The wallets, the swapping and the VPN need the desktop app, because a web page must never hold your keys or control your network connection. There is no phone app.</p>
+        <div class="quoteheader">Quote from: someone</div><div class="quote">Where do I download it?</div>
+        <p>There is no installer yet. You build it from the source code, which is also how you can check what it does. If that sentence means nothing to you, use the browser version for now and wait for the signed installer.</p>
+        <div class="quoteheader">Quote from: someone</div><div class="quote">What if my computer has a virus?</div>
+        <p>Then nothing here helps, and nothing anywhere does. A wallet on an infected computer is a wallet someone else can open.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Beginner's guide — glossary</span><span class="date">« <b>Reply #5</b> »</span></div>
+      <div class="inner">
+        <table class="spec">
+          <tr><td>Address</td><td>What you give someone so they can pay you. Make a new one per person on Monero.</td></tr>
+          <tr><td>Churn</td><td>Sending a coin to yourself so that its next move no longer connects to how it arrived.</td></tr>
+          <tr><td>Coin control</td><td>Seeing your balance as the separate coins it is made of, and choosing which ones a payment may use.</td></tr>
+          <tr><td>Fee</td><td>What the network charges to process a payment. Shown before you confirm, always.</td></tr>
+          <tr><td>Freeze</td><td>Marking a coin so the wallet never spends it. Used for suspicious tiny deposits sent to trace you.</td></tr>
+          <tr><td>IP</td><td>Your computer's internet address. Every server you contact sees it unless you use a VPN or Tor.</td></tr>
+          <tr><td>KYC</td><td>"Know your customer": a service asking for your passport. The ID rating on the Exchange board tells you who does.</td></tr>
+          <tr><td>Node</td><td>A computer that holds a copy of the blockchain. Your wallet asks a node for your payments. Your own node is best; a remote one through Tor is fine.</td></tr>
+          <tr><td>Phantom</td><td>A browser extension that holds a Solana key. Used for trading in browser mode.</td></tr>
+          <tr><td>Seed</td><td>Your wallet as 24 or 25 words. Paper only.</td></tr>
+          <tr><td>Shielded</td><td>Zcash's private mode. The only mode you should use.</td></tr>
+          <tr><td>Slippage</td><td>How much worse than the quoted price you are willing to accept on a trade. The app has a ceiling it will not cross.</td></tr>
+          <tr><td>Subaddress</td><td>Monero's word for a fresh address that still belongs to the same wallet.</td></tr>
+          <tr><td>Swap service</td><td>An internet exchange booth: SOL in, XMR out, for a few minutes of trust.</td></tr>
+          <tr><td>Tor</td><td>A volunteer network that hides your IP by bouncing your connection around. Slower than a VPN, no company in the middle.</td></tr>
+          <tr><td>Transparent</td><td>Zcash's public mode. Avoid it. The app flags anything sitting in it.</td></tr>
+          <tr><td>Vault</td><td>In this app: the screen with your Monero and Zcash wallets and the encrypted Solana key, protected by one master password.</td></tr>
+          <tr><td>VPN</td><td>A service that replaces your IP with theirs. Moneyero has one built in; you bring the subscription.</td></tr>
+          <tr><td>WireGuard</td><td>The protocol VPN providers use. The small file they give you is a WireGuard config. Paste it into the app.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+<script type="module">
+  import { publicIp } from "/src/lib/leaks.ts";
+  publicIp().then((r) => { for (const el of document.querySelectorAll("[data-ip-inline]")) el.textContent = r.ip ?? "an address we could not read"; });
+</script>
+</body>
+</html>
