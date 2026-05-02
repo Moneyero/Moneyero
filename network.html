@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network: built-in VPN - Moneyero</title>
+  <meta name="description" content="A WireGuard VPN inside the wallet: no driver, no admin rights, fails closed. Plus Tor routing, system WireGuard control and real leak tests." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Network: the VPN is inside the wallet</span><span class="pages">Board: Infrastructure</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name s">Network</div><div class="rank">Sr. Member</div><div class="stars s">★★★★</div><div class="avatar s">NET</div>Activity: live<br>Merit: measured<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Network: the VPN is inside the wallet</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">Your computer has an internet address, and every server you talk to sees it, like a return address on an envelope. This screen replaces it. A VPN is built into the app, so there is nothing to install and nothing to forget to switch on. If the VPN drops, the app stops talking instead of leaking.</p>
+        <h3>How to use it</h3>
+        <ol>
+          <li>Get a VPN subscription that offers <b>WireGuard</b> files. Mullvad, Proton, IVPN and AirVPN all do, for a few euros a month. Download one file from their site.</li>
+          <li>In the Network screen, paste the contents of that file and click <b>connect</b>.</li>
+          <li>Click <b>check exit IP</b>. The address shown is what every server now sees instead of yours.</li>
+          <li>Prefer Tor? Run Tor Browser, flip the switch to <b>Tor</b>, and the same traffic goes through Tor instead.</li>
+        </ol>
+        <p>What it covers: everything this app sends, including the Monero wallet's connection to its node, the price data, the swap services and the trading data. What it cannot cover: other programs, and the Phantom browser extension, which has its own connection. The screen says which is which.</p>
+        <div class="actions"><a class="btn sol" href="app.html?view=network">Run the browser checks</a><a class="btn grey" href="index.html#exposure">What this site sees about you</a></div>
+        <h3>Built-in WireGuard, technically</h3>
+        <p>WireGuard is implemented in userspace inside Moneyero: the protocol via boringtun, a TCP/IP stack via smoltcp, and a local connector that only Moneyero's own HTTP client can reach. Paste a standard WireGuard configuration from any provider and connect.</p>
+        <ul>
+          <li><b>Covers everything the app sends.</b> Solana RPC, Jupiter, GeckoTerminal, CoinGecko, all four swap providers, the Claude API, and the Monero daemon link. DNS is resolved inside the tunnel.</li>
+          <li><b>Fails closed.</b> No handshake, no requests. There is no fallback to the clear network for application traffic.</li>
+          <li><b>Proof on demand.</b> One button fetches your exit IP through the tunnel itself and shows it next to the handshake age and byte counters.</li>
+          <li><b>Works with any provider that exports WireGuard.</b> Mullvad, Proton, IVPN, AirVPN, Obscura's Mullvad exits, your own server.</li>
+          <li><b>Tested against a real peer.</b> The test suite brings up a WireGuard peer in-process and pushes a hostname lookup and 100 KB of TCP through the whole path before a build is considered good.</li>
+        </ul>
+        <h3>Or Tor</h3>
+        <p>The same single switch can point at a Tor SOCKS port (daemon on 9050, Tor Browser on 9150). The identical set of requests then goes through Tor, with the same fail-closed behaviour. check.torproject.org confirms the exit is a relay.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name s">Network</div><div class="rank">Sr. Member</div><div class="stars s">★★★★</div><div class="avatar s">NET</div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Network — technical details: scope, system tunnel, checks</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <div class="quoteheader">Scope, stated plainly</div>
+        <div class="quote bad">The built-in VPN protects traffic that Moneyero itself generates. It cannot capture other programs, and it cannot capture a browser extension such as Phantom, which uses the browser's own network path. For whole-machine coverage Moneyero also controls the system tunnel below, and the interface shows which layer is protecting which traffic.</div>
+        <h3>System WireGuard</h3>
+        <ul>
+          <li>Import configs, bring tunnels up and down through the official binaries (needs Administrator on Windows), read live handshake and transfer counters.</li>
+          <li>Kill-switch state is inferred from the config and labelled as inferred. Moneyero writes no firewall rules.</li>
+        </ul>
+        <h3>Checks</h3>
+        <table class="spec">
+          <tr><td>Exit IP via tunnel</td><td>Fetched through the built-in tunnel's own connector, independent of any other setting.</td></tr>
+          <tr><td>Exit IP via app path</td><td>Whatever the app would use right now: VPN, Tor, or clear. Reports Tor-exit status.</td></tr>
+          <tr><td>Exit IP direct</td><td>Deliberately bypasses everything for comparison. Reveals your underlying address to the check service; the button says so.</td></tr>
+          <tr><td>DNS leak</td><td>Ten unique hostnames resolved through the operating-system resolver, then bash.ws reports which resolvers reached it.</td></tr>
+          <tr><td>WebRTC</td><td>In browser mode, a STUN candidate that differs from your HTTP address means WebRTC bypasses your proxy.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
