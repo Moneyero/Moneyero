@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security and threat model - Moneyero</title>
+  <meta name="description" content="What Moneyero protects against, what it does not, who can observe what, Monero versus Zcash, and where data lives on disk." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Security: the threat model, in full</span><span class="pages">Board: Infrastructure · sticky</span></div>
+
+  <div class="post" id="adversaries">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Security: the threat model, in full</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">In plain words: who could be watching you, and what this app does about each of them. Anything not on this page is not protected.</p>
+        <h3>The short version</h3>
+        <ul>
+          <li><b>People reading the Solana blockchain.</b> They see all your trades. Nothing can stop that. The app keeps your trading money separate from your savings so the trades do not point at the savings.</li>
+          <li><b>People reading the Monero blockchain.</b> They see nothing useful. That is the whole reason Monero is the savings account.</li>
+          <li><b>Websites and servers you connect to.</b> They see your IP. The built-in VPN or Tor fixes that for everything the app does.</li>
+          <li><b>The swap service.</b> Sees the amount and your Monero address, and your IP unless the VPN is on. The app shows you this before you pay and rates them on whether they ask for ID.</li>
+          <li><b>Your internet provider.</b> Sees where your traffic goes, not what is in it. The VPN hides the destinations too.</li>
+          <li><b>Someone who steals your laptop.</b> Everything is encrypted with your master password. Use full-disk encryption as well.</li>
+          <li><b>A virus on your computer.</b> Not protected. Nothing can protect a wallet on an infected machine.</li>
+        </ul>
+        <h3>The full table: adversaries, ordered by how well they are handled</h3>
+        <p class="small dim">"Partial" means the mitigation exists and depends on your configuration or on third parties.</p>
+        <div class="tblwrap"><table class="ft">
+          <tr><th>Adversary</th><th>Capability</th><th>Protection</th><th>How</th></tr>
+          <tr><td>Chain analysis, Solana</td><td>Reads every transaction, clusters addresses, tags exchange deposits</td><td class="lv-none">none on-chain</td><td>Dedicated trading key separate from treasury; value exits through single-use provider deposit addresses</td></tr>
+          <tr><td>Chain analysis, Monero</td><td>Ring heuristics, timing, output age</td><td class="lv-strong">strong (protocol)</td><td>Reference wallet, default ring size, fresh subaddress per counterparty, coin control for dust</td></tr>
+          <tr><td>Chain analysis, Zcash</td><td>Transparent pool is Bitcoin-like; shielded pool is encrypted</td><td class="lv-part">partial, strong once shielded</td><td>Pools shown separately, FullPrivacy default, transparent balance flagged, shield-all</td></tr>
+          <tr><td>RPC and API operators</td><td>Log IP and queried addresses, correlate over time</td><td class="lv-part">partial</td><td>One tunnelled client (WireGuard or Tor), private RPC URL setting, public-RPC warning, observers panel</td></tr>
+          <tr><td>Swap providers</td><td>Know deposit tx, settle address, amounts, IP; may request identity</td><td class="lv-part">partial</td><td>Disclosure before every order, KYC rating and log policy shown, tunnelled path, refund address required</td></tr>
+          <tr><td>ISP and local network</td><td>Destinations and timing of all traffic</td><td class="lv-part">partial</td><td>Built-in WireGuard for app traffic, system WireGuard control and verification, Tor, DNS-leak test</td></tr>
+          <tr><td>VPN operator</td><td>All destinations once tunnelled</td><td class="lv-part">partial</td><td>Tor as a second hop for app traffic; stated in the UI</td></tr>
+          <tr><td>Malware on the host</td><td>Memory, keystrokes, clipboard</td><td class="lv-none">out of scope</td><td>Vault key zeroised on lock; wallet processes on loopback with random login. A compromised host defeats every wallet.</td></tr>
+          <tr><td>Disk seizure</td><td>Files at rest</td><td class="lv-strong">strong</td><td>Vault: Argon2id (64 MiB, 3 passes) and XChaCha20-Poly1305. Monero wallet files encrypted by monero-wallet-rpc. Zcash keys inside the node wallet.</td></tr>
+          <tr><td>The authors</td><td>—</td><td class="lv-strong">not applicable</td><td>No server, no telemetry, no update check, no analytics on this site</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt" id="observers">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Security — technical details: who sees what, and the rules the code follows</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <p>A deterministic module (<code>src/lib/privacy.ts</code>) turns the current state into warnings, each with a level and an observer. It runs before swaps, orders, Zcash sends and node changes, and in the status bar. It lists facts; it does not score.</p>
+        <table class="spec">
+          <tr><td>Solana swap</td><td>Ledger is public. Phantom's RPC sees the transaction in browser mode. Public RPC logs IP. No tunnel means real IP. Token red flags: mint or freeze authority enabled, thin liquidity.</td></tr>
+          <tr><td>Exchange order</td><td>Provider sees IP (Tor, VPN or real, stated), deposit tx, settle address, amounts. Monero address reuse. Transparent ZEC leg. KYC rating C or D.</td></tr>
+          <tr><td>Zcash send</td><td>Transparent sender, transparent recipient, any policy below FullPrivacy (critical), and the note that node and network path still see timing.</td></tr>
+          <tr><td>Monero node</td><td>Remote node sees IP, restore height and fetched outputs; remote marked trusted is critical; a local node still reveals that the IP runs Monero at the P2P layer.</td></tr>
+          <tr><td>Monero outputs</td><td>Merging outputs from different subaddresses proves common ownership to anyone who knows them; dust spent with real funds links them to whoever sent it.</td></tr>
+          <tr><td>Network</td><td>Clearnet; tunnel enabled but down (fails closed); VPN only (operator sees destinations).</td></tr>
+        </table>
+        <h3>Rules the code follows</h3>
+        <ul>
+          <li><b>Name the observer.</b> Every warning says who learns what.</li>
+          <li><b>Keys stay in the software that owns them.</b> Monero keys in monero-wallet-rpc, Zcash keys in the node wallet, the Solana trading key in the Rust vault. The UI process sees none of them.</li>
+          <li><b>One network path.</b> Every request goes through one client with one tunnel switch.</li>
+          <li><b>Fail closed.</b> Tunnel enabled and unreachable means requests fail.</li>
+          <li><b>No inferred state presented as measured.</b> Kill-switch state is labelled inferred. The DNS test resolves real names. Exit IP is fetched each time.</li>
+          <li><b>The agent proposes.</b> It has no reference to signing or ordering functions.</li>
+          <li><b>Everything audited.</b> Signatures, sends, orders, proposals, decisions and model calls are written to a local audit table.</li>
+        </ul>
+        <div class="quoteheader">Not protected</div>
+        <div class="quote bad">A compromised operating system, a malicious RPC you chose, a provider that requests identity after deposit, chain analysis on Solana or transparent Zcash, timing correlation by an observer of both your ISP and a provider, and your own address reuse.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post" id="xmr-vs-zec">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Security — Monero and Zcash: similar cryptography, very different crowds to hide in</span><span class="date">« <b>Reply #2</b> »</span></div>
+      <div class="inner">
+        <p>In a fully shielded Zcash transaction (shielded in, shielded out) the sender is hidden by proving membership in the whole shielded pool, not by picking decoys. Monero's full-chain membership proofs (FCMP++, the upgrade replacing the fixed 16-member rings) hide the sender the same way: membership in the accumulated set of every output ever created, with no ring chosen by the wallet. For a shielded-to-shielded send, Zcash's sender privacy is at least as strong cryptographically.</p>
+        <p><b>What differs is the effective anonymity set.</b> Zcash's set is everyone who chose the shielded pool. Monero's is everyone, ever, with no choice involved. Privacy that is optional is privacy a minority uses, and a minority is easier to study.</p>
+        <div class="tblwrap"><table class="ft">
+          <tr><th>Property</th><th class="xmr">Monero</th><th>Zcash, fully shielded</th><th class="cex">Zcash, transparent</th></tr>
+          <tr><td>Privacy is</td><td class="lv-strong">mandatory</td><td class="lv-part">opt-in</td><td class="lv-none">absent</td></tr>
+          <tr><td>Sender hidden among</td><td class="lv-strong">every output on the chain (FCMP++); 16 decoys per input today</td><td class="lv-part">every note in that shielded pool</td><td class="lv-none">nobody</td></tr>
+          <tr><td>Amounts</td><td class="lv-strong">hidden</td><td class="lv-strong">hidden</td><td class="lv-none">public</td></tr>
+          <tr><td>Receiver</td><td class="lv-strong">one-time stealth address</td><td class="lv-strong">shielded address, encrypted note</td><td class="lv-none">public</td></tr>
+          <tr><td>Set fragmentation</td><td class="lv-strong">one set</td><td class="lv-part">split across Sapling and Orchard pools; moving between pools or in from transparent reveals the amount</td><td class="lv-none">n/a</td></tr>
+          <tr><td>Weak point</td><td class="lv-part">timing and the network path; exchange hops</td><td class="lv-part">the transparent side: most inflows and many wallets still touch it</td><td class="lv-none">everything</td></tr>
+        </table></div>
+        <h3>What Moneyero does with that</h3>
+        <ul>
+          <li><b>Monero is the default treasury.</b> The Exchange proposes a fresh Monero subaddress for settlement, and the Agent's "move profit to private" rule template points at XMR.</li>
+          <li><b>Zcash is kept shielded by force of habit.</b> Transparent and shielded balances are never summed. Transparent funds are flagged until shielded. Sends default to FullPrivacy and anything lower is a critical warning.</li>
+          <li><b>The pool is named.</b> Zcash balances show Orchard, Sapling and transparent separately, because they are three different crowds.</li>
+          <li><b>Neither chain fixes the path.</b> Both wallets talk to nodes over the same tunnel switch, because the network layer is where either one is most often deanonymised in practice.</li>
+        </ul>
+        <div class="note"><b>Honest footnote.</b> Shielded Zcash adoption is growing and the gap narrows as it does. This post describes the sets as they are, not as either project hopes they will be.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt" id="disk">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Security — technical details: data on disk</span><span class="date">« <b>Reply #3</b> »</span></div>
+      <div class="inner">
+        <p>Use full-disk encryption. These files describe your own activity.</p>
+        <table class="spec">
+          <tr><td>moneyero.db</td><td>SQLite: settings, encrypted secrets, activity, trades, orders, rules, proposals, audit. Secrets are ciphertext; the rest is plaintext metadata about your own activity.</td></tr>
+          <tr><td>monero/wallets/</td><td>Wallet files encrypted by monero-wallet-rpc with the wallet password.</td></tr>
+          <tr><td>wg/*.conf</td><td>WireGuard configs including the private key, because WireGuard must read them. Mode 0600 on Unix.</td></tr>
+          <tr><td>logs/</td><td>Standard output of managed processes. Review before sharing.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
