@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminal - Moneyero</title>
+  <meta name="description" content="Solana execution: Jupiter-routed swaps, on-chain risk flags, candles, slippage ceiling, trade log and average-cost P&L." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Terminal: execution on Solana, with the receipts</span><span class="pages">Board: Trading (public ledger)</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Terminal: execution on Solana, with the receipts</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">This is the trading screen. You pick a coin on Solana, see whether it looks dangerous, buy or sell it, and watch your profit. It works in your browser right now.</p>
+        <h3>How to use it</h3>
+        <ol>
+          <li>Click <b>Open in browser</b>. If you do not have the Phantom extension, the big orange button will tell you to install it from phantom.app first.</li>
+          <li>Click <b>connect wallet</b> and approve in Phantom.</li>
+          <li>Type a coin's name in the search box on the left and click it. Its chart and details appear in the middle.</li>
+          <li>Read the coloured flags next to the price. <b>Red</b> means the coin's creator can still print more of it or freeze yours, or almost nobody is trading it. Do not buy red.</li>
+          <li>Type an amount on the right and click <b>buy</b>. The price you will get, and the worst price you accept, are shown before you confirm.</li>
+        </ol>
+        <p>The yellow box under the button tells you, in plain words, who can see this trade. The box on the left, <b>Observers</b>, lists every website this screen has talked to and what each one learned. The <b>Private side</b> box shows the same coin priced in Monero and Zcash, and how much of your money is sitting in public.</p>
+        <div class="actions"><a class="btn sol" href="app.html">Open in browser with Phantom</a><a class="btn grey" href="download.html">Desktop with local signer</a></div>
+        <div class="quoteheader">Remember</div>
+        <div class="quote s">Everything on Solana is public forever. Keep only trading money here. Profit goes to the Exchange board and from there into Monero or Zcash.</div>
+        <div class="shot"><img src="/shots/terminal.png" alt="Moneyero terminal: SOL/USD candles, watchlist, swap panel and privacy warnings" width="1600" height="760" /><div class="cap">Live capture in browser mode. Price, 24h, liquidity, market cap, holders and verified flag from Jupiter; candles from GeckoTerminal. SOL/USD, 15m.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Terminal — technical details: signing and execution</span><span class="date">« <b>Reply #1</b> »</span></div>
+      <div class="inner">
+        <h3>Signing</h3>
+        <ul>
+          <li><b>Phantom</b> in browser mode: standard <code>signTransaction</code>.</li>
+          <li><b>Local signer</b> on desktop: an ed25519 key generated or imported into the vault. Signing happens in Rust over the transaction message bytes; the UI receives the signature only. Exportable as base58 for backup.</li>
+          <li>Two paths exist because browser extensions cannot inject into a desktop webview. The interface states this rather than presenting a connect button that cannot work.</li>
+        </ul>
+        <h3>Execution</h3>
+        <ul>
+          <li>Quotes and swap transactions from Jupiter's swap API (ExactIn, intermediate tokens restricted). Keyless endpoint by default; API-key slot for higher limits.</li>
+          <li>Versioned transaction signed locally, submitted with preflight, confirmed against <code>lastValidBlockHeight</code>.</li>
+          <li>Slippage presets of 10, 50, 100 and 300 bps and a hard ceiling (<code>trade.max_slippage_bps</code>) the button will not cross.</li>
+          <li>Priority fee from Jupiter's estimate, capped at 0.005 SOL.</li>
+          <li>The default pair is SOL against USDC, so the form is live the moment the page opens. Search a token to trade that instead.</li>
+        </ul>
+        <h3>Risk flags</h3>
+        <p>Each flag is one fact from token metadata: mint authority enabled, freeze authority enabled, top-ten holder concentration above 50%, deployer share above 10%, liquidity below 20k or 100k USD, low organic score, pump.fun origin, not on the verified list. There is no composite score.</p>
+        <h3>Profit and loss</h3>
+        <p>Each swap executed through Moneyero is written to a local trade table: amounts in and out, USD marks at execution, slippage, route and signature. P&amp;L is average-cost over that table. Positions acquired elsewhere appear with their on-chain balance, and their sales are reported as untracked rather than counted as profit.</p>
+        <div class="note sol"><b>Public RPC.</b> api.mainnet-beta.solana.com logs the IP that queries your address. Set a private RPC in Settings or enable the tunnel. The terminal shows this warning next to the RPC latency.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Terminal — technical details: the private side, observers, data sources</span><span class="date">« <b>Reply #2</b> »</span></div>
+      <div class="inner">
+        <h3>Private side panel</h3>
+        <p>Monero and Zcash prices, how much XMR and ZEC one SOL buys right now, your held balance of each, and a bar showing what share of your treasury sits on a public ledger versus private. In the browser the honest number is "all of it". Buttons jump to the Exchange to settle profit into XMR or ZEC on desktop.</p>
+        <h3>Observers panel</h3>
+        <p>A live count of every host this session has contacted and what each one learns. Jupiter sees your searches, quotes and wallet address. GeckoTerminal sees which pool you chart. CoinGecko sees that you watch XMR, ZEC and SOL. The Solana RPC sees every address you query. Phantom, once connected, sees your address and every transaction and talks to its own RPC outside any tunnel set here. The badge in the corner reads clearnet, Tor or VPN.</p>
+        <h3>Data sources</h3>
+        <table class="spec">
+          <tr><td>Token metadata</td><td>Jupiter tokens v2: search, audit fields, stats, verification</td></tr>
+          <tr><td>Prices</td><td>Jupiter price v3 for the instrument, watchlist and holdings, every 15 s</td></tr>
+          <tr><td>Candles</td><td>GeckoTerminal OHLCV of the top pool for the mint, 1m to 1d, with volume</td></tr>
+          <tr><td>Balances</td><td>Your RPC through <code>@solana/web3.js</code>; on desktop, fetch is replaced by the Rust client so the tunnel switch applies</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
