@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault: Monero and Zcash - Moneyero</title>
+  <meta name="description" content="Native Monero wallet through monero-wallet-rpc with coin control, Zcash shielded and transparent pools through zcashd or zallet, and the vault-encrypted Solana signer." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" /><link rel="icon" type="image/png" sizes="400x400" href="/logo.png" /><link rel="apple-touch-icon" href="/logo.png" /><meta property="og:site_name" content="Moneyero" /><meta property="og:image" content="https://moneyero.app/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:image" content="https://moneyero.app/banner.png" /><link rel="stylesheet" href="/site/site.css" />
+</head>
+<body>
+<div id="wrapper">
+<div id="hdr"></div>
+
+<div class="topic">
+  <div class="catbg"><span>Vault: Monero and Zcash, keys where they belong</span><span class="pages">Board: Settlement (private)</span></div>
+
+  <div class="post">
+    <div class="poster"><div class="name op">Moneyero</div><div class="rank">Hero Member</div><div class="stars x">★★★★★</div><div class="avatar"><img src="/logo.png" alt="Moneyero" /></div>Activity: 0.1<br>Merit: honest<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Vault: Monero and Zcash, keys where they belong</span><span class="date">« <b>on:</b> today »</span></div>
+      <div class="inner">
+        <p class="lead">This is the savings screen. Your Monero wallet and your Zcash wallet live here, on your own computer, and so does the encrypted key the trading screen uses. Desktop app only: a web page must never hold keys.</p>
+        <h3>How to use it, first time</h3>
+        <ol>
+          <li>In <b>Settings</b>, create a master password. It locks everything in this screen.</li>
+          <li>Open <b>Vault › Monero</b> and click <b>create wallet</b>. It shows you 25 words, once. <b>Write them on paper.</b> Those words are the money.</li>
+          <li>To <b>receive</b>: click <b>new address</b>, give that address to the person paying you. One address per person, every time. It is one click, so there is no reason not to.</li>
+          <li>To <b>send</b>: paste the address, type the amount, click <b>prepare</b>. The exact fee appears. Nothing moves until you click <b>broadcast</b>.</li>
+          <li>Zcash works the same way, with one extra rule: there is <b>shielded</b> money (private) and <b>transparent</b> money (public). Keep it shielded. Anything transparent is shown in yellow with a <b>shield all</b> button.</li>
+        </ol>
+        <h3>Coin control, in plain words</h3>
+        <p>Your Monero balance is really a pile of separate coins, one per payment you received. The <b>Outputs</b> table shows them. You can <b>freeze</b> a coin so the wallet never spends it (do this to any tiny deposit you did not expect: it may be someone trying to trace you). You can tick coins so the next payment uses only those. And you can <b>churn</b> a coin, which sends it to yourself so its past no longer touches its future. The app warns you before you combine coins in a way that reveals something.</p>
+        <div class="quoteheader">Quote</div>
+        <div class="quote x"><b>Why not a reimplementation.</b> Moneyero runs the official Monero and Zcash wallet software and talks to it; it does not reinvent their cryptography. The reference wallets have a decade of review behind them. Moneyero adds the supervision, the warnings and the interface.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt" id="monero">
+    <div class="poster"><div class="name op">Monero</div><div class="rank">Main treasury</div><div class="stars x">★★★★★</div><div class="avatar">XMR</div>Private by default<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Vault — technical details: Monero</span><span class="date">« <b>Reply #1</b> » <span data-px="XMR"></span> <span data-chg="XMR"></span></span></div>
+      <div class="inner">
+        <h3>Process</h3>
+        <p>You point Moneyero at the official <code>monero-wallet-rpc</code> binary (verify its signature from getmonero.org). It is launched bound to 127.0.0.1 with a random per-session digest login and a wallet directory inside the application data folder. Logs are captured locally. The process is stopped when the application exits.</p>
+        <h3>Wallets</h3>
+        <ul>
+          <li>Create, open, or restore from a 25-word seed with restore height and optional seed offset.</li>
+          <li>Wallet files are encrypted by the wallet process with the password you choose.</li>
+          <li>The seed is shown once, by the wallet process, at creation. It is never stored or transmitted by Moneyero. Viewing it later requires the vault to be unlocked and is audited.</li>
+        </ul>
+        <h3>Node</h3>
+        <ul>
+          <li>Your own <code>monerod</code> or a remote node, switchable at runtime with SSL mode and trusted flag.</li>
+          <li>When the tunnel switch is on, the wallet is started with <code>--proxy</code> so the daemon connection goes through Tor.</li>
+          <li>Wallet height is shown against daemon height; the node warning names what a remote node can see.</li>
+        </ul>
+        <h3>Operations</h3>
+        <table class="spec">
+          <tr><td>Balance</td><td>Total, unlocked, blocks to unlock, per-subaddress breakdown</td></tr>
+          <tr><td>Receive</td><td>Subaddresses with labels and used or fresh state; one click for a new one</td></tr>
+          <tr><td>Send</td><td>Address validated, then <code>transfer</code> with <code>do_not_relay</code> to obtain the exact fee, then <code>relay_tx</code> after you confirm</td></tr>
+          <tr><td>Coin control</td><td>Every output the wallet owns, listed. Freeze any of them out of future spends, pick exactly which ones a send may use, or churn one to a fresh subaddress of your own. Warnings before you act: merging outputs from different subaddresses proves common ownership, dust spent with real funds links them</td></tr>
+          <tr><td>History</td><td>In, out, pending, pool and failed transfers with confirmations and lock state</td></tr>
+          <tr><td>Maintenance</td><td>Refresh, store, rescan</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="post" id="zcash">
+    <div class="poster"><div class="name z">Zcash</div><div class="rank">Shielded treasury</div><div class="stars">★★★★</div><div class="avatar z">ZEC</div>Private when shielded<br><span class="on">Online</span></div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Vault — technical details: Zcash, transparent kept visible</span><span class="date">« <b>Reply #2</b> » <span data-px="ZEC"></span> <span data-chg="ZEC"></span></span></div>
+      <div class="inner">
+        <h3>Backend</h3>
+        <p>Moneyero speaks the <code>zcashd</code> wallet JSON-RPC surface, which <code>zallet</code>, its successor, preserves. Credentials come from the vault or the node's cookie file. The node process can be started and stopped from the Vault if you provide the binary path.</p>
+        <h3>Pools and addresses</h3>
+        <ul>
+          <li>Orchard, Sapling and transparent balances are shown separately. Transparent balance is flagged until shielded.</li>
+          <li>Unified (u1), Sapling (zs) and transparent (t1) address creation, with receiver types listed for unified addresses.</li>
+          <li>Per-address balances from the unspent sets.</li>
+        </ul>
+        <h3>Sending</h3>
+        <ul>
+          <li><code>z_sendmany</code> with an explicit privacy policy. Default <code>FullPrivacy</code>. Any lower policy is a critical warning.</li>
+          <li>Memos only to shielded recipients.</li>
+          <li>Shield everything transparent in one action with <code>z_mergetoaddress</code>; operation status is tracked.</li>
+        </ul>
+        <h3>Keys</h3>
+        <table class="spec">
+          <tr><td>Import</td><td>Spending keys, viewing keys and transparent WIF keys, with optional rescan</td></tr>
+          <tr><td>Export</td><td>Viewing keys on request (vault unlocked, audited)</td></tr>
+          <tr><td>Restore from seed</td><td>Done in the node itself: wallet.dat for zcashd, <code>import-mnemonic</code> for zallet</td></tr>
+        </table>
+        <div class="note zec"><b>Light client.</b> The current backend is the full-node wallet. A lightwalletd-based client is on the roadmap; the RPC adapter is the integration seam. See <a href="download.html#limits">known limits</a>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post alt" id="signer">
+    <div class="poster"><div class="name s">SOL signer</div><div class="rank">Trading key</div><div class="stars s">★★★</div><div class="avatar s">SOL</div>Encrypted locally</div>
+    <div class="postarea">
+      <div class="phead"><span class="subject">Re: Vault — technical details: the trading key, encrypted locally</span><span class="date">« <b>Reply #3</b> »</span></div>
+      <div class="inner">
+        <ul>
+          <li>Master password → Argon2id (64 MiB, 3 passes, 1 lane) → XChaCha20-Poly1305 with a random 24-byte nonce per secret.</li>
+          <li>Holds API keys, RPC credentials and the Solana trading key. Monero and Zcash keys never enter it.</li>
+          <li>Key material is zeroised on lock. Password change re-encrypts every secret in one transaction.</li>
+          <li>Generate or import (base58 or solana-keygen JSON). Public key shown; secret exportable for backup, audited.</li>
+          <li>Signing operates on transaction message bytes in Rust; each signature is logged with a hash of the message.</li>
+          <li><b>Fund this key only with what you intend to trade.</b> Treasury belongs in Monero or shielded Zcash.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ftr"></div>
+</div>
+<script type="module" src="/site/site.js"></script>
+</body>
+</html>
