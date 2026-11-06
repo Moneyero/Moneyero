@@ -1,34 +1,20 @@
 {
-  "name": "moneyero",
-  "private": true,
-  "version": "0.1.0",
-  "description": "Moneyero - private treasury terminal. Solana execution. XMR and ZEC settlement.",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri",
-    "desktop": "tauri dev",
-    "desktop:build": "tauri build",
-    "typecheck": "tsc --noEmit",
-    "icons": "node scripts/gen-icons.mjs"
+  "name": "@esbuild/win32-x64",
+  "version": "0.25.12",
+  "description": "The Windows 64-bit binary for esbuild, a JavaScript bundler.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evanw/esbuild.git"
   },
-  "dependencies": {
-    "@solana/web3.js": "^1.98.0",
-    "@tauri-apps/api": "^2.5.0",
-    "buffer": "^6.0.3",
-    "lightweight-charts": "^4.2.3",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "zustand": "^5.0.3"
+  "license": "MIT",
+  "preferUnplugged": true,
+  "engines": {
+    "node": ">=18"
   },
-  "devDependencies": {
-    "@tauri-apps/cli": "^2.5.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "^5.6.3",
-    "vite": "^6.0.7"
-  }
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ]
 }
