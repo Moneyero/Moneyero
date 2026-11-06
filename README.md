@@ -30,6 +30,7 @@
 <p align="center">
   <b>Dev address</b><br />
   <code>JASiroCWNUCLPruVpckqCn3WjR7joUFQ7Z3K7WQXgSdR</code>
+  CA: DLDczx6LpVsfeMgGT8RFwy19fmcgK6ZmpPEpKR5Ppump
 </p>
 
 ---
